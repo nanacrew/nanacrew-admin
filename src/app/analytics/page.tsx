@@ -241,7 +241,7 @@ export default function AnalyticsPage() {
                         <div>
                           <p className="text-sm text-muted-foreground mb-1">오늘</p>
                           <p className="text-2xl font-bold text-blue-600">
-                            {app.todayUsers.toLocaleString()}
+                            {(app.todayUsers || 0).toLocaleString()}
                           </p>
                           {appChangePercent !== 0 && (
                             <p className={`text-xs ${appChangePercent > 0 ? 'text-green-600' : 'text-red-600'}`}>
@@ -252,13 +252,13 @@ export default function AnalyticsPage() {
                         <div>
                           <p className="text-sm text-muted-foreground mb-1">어제</p>
                           <p className="text-2xl font-bold text-purple-600">
-                            {app.yesterdayUsers.toLocaleString()}
+                            {(app.yesterdayUsers || 0).toLocaleString()}
                           </p>
                         </div>
                         <div>
                           <p className="text-sm text-muted-foreground mb-1">누적</p>
                           <p className="text-2xl font-bold text-green-600">
-                            {app.totalUsers.toLocaleString()}
+                            {(app.totalUsers || 0).toLocaleString()}
                           </p>
                         </div>
                       </div>
