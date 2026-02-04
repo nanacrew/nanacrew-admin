@@ -1,8 +1,9 @@
 'use client'
 
 import Link from 'next/link'
-import { usePathname } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
 import { cn } from '@/lib/utils'
+import { Button } from '@/components/ui/button'
 
 type MenuItem = {
   title: string
@@ -48,12 +49,23 @@ const menuSections: MenuSection[] = [
 
 export default function Sidebar() {
   const pathname = usePathname()
+  const router = useRouter()
 
   const isActive = (href: string) => {
     if (href === '/') {
       return pathname === '/'
     }
     return pathname.startsWith(href)
+  }
+
+  const handleLogout = async () => {
+    try {
+      await fetch('/api/auth/logout', { method: 'POST' })
+      router.push('/login')
+      router.refresh()
+    } catch (error) {
+      console.error('Logout error:', error)
+    }
   }
 
   return (
@@ -109,7 +121,14 @@ export default function Sidebar() {
       </nav>
 
       {/* 푸터 */}
-      <div className="p-4 border-t border-gray-200">
+      <div className="p-4 border-t border-gray-200 space-y-3">
+        <Button
+          variant="outline"
+          className="w-full justify-start text-red-600 hover:bg-red-50 hover:text-red-700"
+          onClick={handleLogout}
+        >
+          <span className="mr-2">🚪</span> 로그아웃
+        </Button>
         <div className="px-3 py-2 bg-gray-50 rounded-lg">
           <p className="text-xs text-gray-500">Version 1.0.0</p>
           <p className="text-xs text-gray-400 mt-1">© 2026 NanaCrew</p>
