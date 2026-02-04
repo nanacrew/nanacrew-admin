@@ -16,7 +16,7 @@ type App = {
   id: string
   name: string
   package_name: string
-  platform: 'android' | 'ios'
+  platform: ('android' | 'ios')[]
   icon_url?: string
   description?: string
 }
