@@ -94,13 +94,6 @@ export default function LoginPage() {
             >
               {loading ? '로그인 중...' : '로그인'}
             </Button>
-
-            <div className="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
-              <p className="text-sm text-blue-800 font-semibold mb-2">기본 계정</p>
-              <p className="text-xs text-blue-700">이메일: admin@nanacrew.com</p>
-              <p className="text-xs text-blue-700">비밀번호: admin123</p>
-              <p className="text-xs text-blue-600 mt-2">⚠️ 로그인 후 반드시 비밀번호를 변경하세요</p>
-            </div>
           </form>
         </CardContent>
       </Card>
