@@ -9,13 +9,53 @@ import { Badge } from '@/components/ui/badge'
 
 export default function SettingsPage() {
   const [adminEmail, setAdminEmail] = useState('admin@nanacrew.com')
+  const [password, setPassword] = useState('')
+  const [passwordConfirm, setPasswordConfirm] = useState('')
   const [notificationsEnabled, setNotificationsEnabled] = useState(true)
   const [emailNotifications, setEmailNotifications] = useState(true)
   const [errorAlerts, setErrorAlerts] = useState(true)
   const [weeklyReport, setWeeklyReport] = useState(false)
+  const [loading, setLoading] = useState(false)
 
-  const handleSave = () => {
-    alert('설정이 저장되었습니다.')
+  const handleSave = async () => {
+    // 비밀번호 확인
+    if (password && password !== passwordConfirm) {
+      alert('비밀번호가 일치하지 않습니다')
+      return
+    }
+
+    // 비밀번호 길이 확인
+    if (password && password.length < 6) {
+      alert('비밀번호는 최소 6자 이상이어야 합니다')
+      return
+    }
+
+    setLoading(true)
+    try {
+      const response = await fetch('/api/admin/update', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email: adminEmail,
+          password: password || undefined
+        })
+      })
+
+      const data = await response.json()
+
+      if (response.ok) {
+        alert('관리자 정보가 저장되었습니다')
+        setPassword('')
+        setPasswordConfirm('')
+      } else {
+        alert(data.error || '저장에 실패했습니다')
+      }
+    } catch (error) {
+      console.error('Save error:', error)
+      alert('저장 중 오류가 발생했습니다')
+    } finally {
+      setLoading(false)
+    }
   }
 
   return (
@@ -48,6 +88,8 @@ export default function SettingsPage() {
                 id="password"
                 type="password"
                 placeholder="새 비밀번호 입력"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
               />
             </div>
             <div className="space-y-2">
@@ -56,9 +98,13 @@ export default function SettingsPage() {
                 id="password-confirm"
                 type="password"
                 placeholder="새 비밀번호 재입력"
+                value={passwordConfirm}
+                onChange={(e) => setPasswordConfirm(e.target.value)}
               />
             </div>
-            <Button onClick={handleSave}>계정 정보 저장</Button>
+            <Button onClick={handleSave} disabled={loading}>
+              {loading ? '저장 중...' : '계정 정보 저장'}
+            </Button>
           </CardContent>
         </Card>
 

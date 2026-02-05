@@ -264,7 +264,7 @@ export default function AnalyticsPage() {
                       </div>
 
                       {/* 7일간 추이 */}
-                      {app.weekData.length > 0 && (
+                      {app.weekData && app.weekData.length > 0 && (
                         <div>
                           <p className="text-sm font-semibold mb-2">7일간 추이</p>
                           <div className="flex items-end gap-1 h-20">
@@ -290,7 +290,7 @@ export default function AnalyticsPage() {
                       )}
 
                       {/* 버전 분포 */}
-                      {app.versionDistribution.length > 0 && (
+                      {app.versionDistribution && app.versionDistribution.length > 0 && (
                         <div>
                           <p className="text-sm font-semibold mb-2">버전 분포</p>
                           <div className="space-y-2">
