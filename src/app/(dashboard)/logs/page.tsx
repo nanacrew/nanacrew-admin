@@ -41,25 +41,51 @@ const categoryLabels: Record<LogCategory, string> = {
   system: 'System'
 }
 
+type App = {
+  id: string
+  name: string
+  package_name: string
+}
+
 export default function LogsPage() {
   const [logs, setLogs] = useState<LogEntry[]>([])
+  const [apps, setApps] = useState<App[]>([])
   const [loading, setLoading] = useState(true)
   const [selectedLevel, setSelectedLevel] = useState<LogLevel | 'all'>('all')
   const [selectedCategory, setSelectedCategory] = useState<LogCategory | 'all'>('all')
-  const [selectedAppId, setSelectedAppId] = useState<string>('all')
+  const [selectedAppId, setSelectedAppId] = useState<string | 'all' | 'admin'>('all')
   const [searchQuery, setSearchQuery] = useState('')
   const [expandedLog, setExpandedLog] = useState<string | null>(null)
 
   useEffect(() => {
+    fetchApps()
     fetchLogs()
   }, [selectedLevel, selectedCategory, selectedAppId, searchQuery])
+
+  const fetchApps = async () => {
+    try {
+      const response = await fetch('/api/apps')
+      if (response.ok) {
+        const data = await response.json()
+        setApps(data)
+      }
+    } catch (error) {
+      console.error('Failed to fetch apps:', error)
+    }
+  }
 
   const fetchLogs = async () => {
     try {
       const params = new URLSearchParams()
       if (selectedLevel !== 'all') params.append('level', selectedLevel)
       if (selectedCategory !== 'all') params.append('category', selectedCategory)
-      if (selectedAppId !== 'all') params.append('appId', selectedAppId)
+      if (selectedAppId !== 'all') {
+        if (selectedAppId === 'admin') {
+          params.append('appId', 'null')
+        } else {
+          params.append('appId', selectedAppId)
+        }
+      }
       if (searchQuery) params.append('search', searchQuery)
 
       const response = await fetch(`/api/logs?${params.toString()}`)
@@ -101,14 +127,6 @@ export default function LogsPage() {
     return `${Math.floor(diff / 86400)}일 전`
   }
 
-  // 앱 목록 추출
-  const uniqueApps = Array.from(
-    new Map(
-      logs
-        .filter(log => log.apps)
-        .map(log => [log.apps!.id, log.apps!])
-    ).values()
-  )
 
   if (loading) {
     return (
@@ -249,7 +267,14 @@ export default function LogsPage() {
                 >
                   전체
                 </Button>
-                {uniqueApps.map((app) => (
+                <Button
+                  variant={selectedAppId === 'admin' ? 'default' : 'outline'}
+                  size="sm"
+                  onClick={() => setSelectedAppId('admin')}
+                >
+                  어드민
+                </Button>
+                {apps.map((app) => (
                   <Button
                     key={app.id}
                     variant={selectedAppId === app.id ? 'default' : 'outline'}

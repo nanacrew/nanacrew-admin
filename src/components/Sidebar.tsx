@@ -28,6 +28,7 @@ const menuSections: MenuSection[] = [
     title: '관리',
     items: [
       { title: '앱 관리', href: '/apps', icon: '📱' },
+      { title: '구독 관리', href: '/subscriptions', icon: '💳' },
       { title: '통계', href: '/analytics', icon: '📈' },
       { title: '연관 서비스', href: '/services', icon: '🔗' },
     ]

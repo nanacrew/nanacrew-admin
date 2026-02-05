@@ -66,12 +66,25 @@ export async function GET(request: NextRequest, { params }: Params) {
 
     const yesterdayUsers = yesterdayData?.active_users || 0
 
+    // 버전 분포 데이터 추출 (최신 날짜 기준)
+    const latestVersionData = weekData && weekData.length > 0
+      ? weekData[weekData.length - 1].version_distribution
+      : null
+
+    let versionDistribution: { version: string; count: number }[] = []
+    if (latestVersionData && typeof latestVersionData === 'object') {
+      versionDistribution = Object.entries(latestVersionData)
+        .map(([version, count]) => ({ version, count: count as number }))
+        .sort((a, b) => b.count - a.count)
+    }
+
     return NextResponse.json({
-      today: todayUsers,
-      yesterday: yesterdayUsers,
-      total: totalUsers,
-      week: weekData || [],
-      month: monthData || []
+      todayUsers,
+      yesterdayUsers,
+      totalUsers,
+      weekData: weekData?.map(d => ({ date: d.date, count: d.active_users || 0 })) || [],
+      monthData: monthData?.map(d => ({ date: d.date, count: d.active_users || 0 })) || [],
+      versionDistribution
     })
   } catch (error) {
     console.error('Error fetching analytics:', error)

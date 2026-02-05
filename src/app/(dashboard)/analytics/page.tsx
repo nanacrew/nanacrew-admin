@@ -89,8 +89,11 @@ export default function AnalyticsPage() {
   }
 
   const getChangePercent = (current: number, previous: number) => {
-    if (previous === 0) return current > 0 ? 100 : 0
-    return Math.round(((current - previous) / previous) * 100)
+    const curr = current || 0
+    const prev = previous || 0
+    if (prev === 0) return curr > 0 ? 100 : 0
+    const percent = Math.round(((curr - prev) / prev) * 100)
+    return isNaN(percent) ? 0 : percent
   }
 
   if (loading) {

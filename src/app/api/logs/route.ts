@@ -28,7 +28,11 @@ export async function GET(request: NextRequest) {
 
     // 앱별 필터
     if (appId) {
-      query = query.eq('app_id', appId)
+      if (appId === 'null') {
+        query = query.is('app_id', null)
+      } else {
+        query = query.eq('app_id', appId)
+      }
     }
 
     // 검색어 필터
