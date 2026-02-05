@@ -172,10 +172,10 @@ export default function LogsPage() {
               />
             </div>
 
-            {/* 필터 버튼들 */}
-            <div className="flex flex-wrap gap-2">
-              {/* 레벨 필터 */}
-              <div className="flex gap-2">
+            {/* 레벨 필터 */}
+            <div>
+              <p className="text-sm font-medium mb-2">로그 레벨</p>
+              <div className="flex flex-wrap gap-2">
                 <Button
                   variant={selectedLevel === 'all' ? 'default' : 'outline'}
                   size="sm"
@@ -212,9 +212,12 @@ export default function LogsPage() {
                   성공
                 </Button>
               </div>
+            </div>
 
-              {/* 카테고리 필터 */}
-              <div className="flex gap-2">
+            {/* 카테고리 필터 */}
+            <div>
+              <p className="text-sm font-medium mb-2">호출 위치</p>
+              <div className="flex flex-wrap gap-2">
                 <Button
                   variant={selectedCategory === 'all' ? 'default' : 'outline'}
                   size="sm"
@@ -233,29 +236,30 @@ export default function LogsPage() {
                   </Button>
                 ))}
               </div>
+            </div>
 
-              {/* 앱별 필터 */}
-              {uniqueApps.length > 0 && (
-                <div className="flex gap-2">
+            {/* 앱별 필터 */}
+            <div>
+              <p className="text-sm font-medium mb-2">앱별 필터</p>
+              <div className="flex flex-wrap gap-2">
+                <Button
+                  variant={selectedAppId === 'all' ? 'default' : 'outline'}
+                  size="sm"
+                  onClick={() => setSelectedAppId('all')}
+                >
+                  전체
+                </Button>
+                {uniqueApps.map((app) => (
                   <Button
-                    variant={selectedAppId === 'all' ? 'default' : 'outline'}
+                    key={app.id}
+                    variant={selectedAppId === app.id ? 'default' : 'outline'}
                     size="sm"
-                    onClick={() => setSelectedAppId('all')}
+                    onClick={() => setSelectedAppId(app.id)}
                   >
-                    모든 앱
+                    {app.name}
                   </Button>
-                  {uniqueApps.map((app) => (
-                    <Button
-                      key={app.id}
-                      variant={selectedAppId === app.id ? 'default' : 'outline'}
-                      size="sm"
-                      onClick={() => setSelectedAppId(app.id)}
-                    >
-                      {app.name}
-                    </Button>
-                  ))}
-                </div>
-              )}
+                ))}
+              </div>
             </div>
           </div>
         </CardContent>

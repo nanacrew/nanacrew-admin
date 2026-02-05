@@ -82,9 +82,9 @@ export default function AnalyticsPage() {
   const getTotalStats = () => {
     return {
       totalApps: apps.length,
-      todayUsers: analytics.reduce((sum, a) => sum + a.todayUsers, 0),
-      yesterdayUsers: analytics.reduce((sum, a) => sum + a.yesterdayUsers, 0),
-      totalUsers: analytics.reduce((sum, a) => sum + a.totalUsers, 0)
+      todayUsers: analytics.reduce((sum, a) => sum + (a.todayUsers || 0), 0),
+      yesterdayUsers: analytics.reduce((sum, a) => sum + (a.yesterdayUsers || 0), 0),
+      totalUsers: analytics.reduce((sum, a) => sum + (a.totalUsers || 0), 0)
     }
   }
 
