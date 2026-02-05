@@ -19,3 +19,6 @@ VALUES (
 
 -- 인덱스 생성
 CREATE INDEX idx_admin_users_email ON admin_users(email);
+
+-- RLS(Row Level Security) 비활성화 - API에서 인증 처리
+ALTER TABLE admin_users DISABLE ROW LEVEL SECURITY;

@@ -28,12 +28,15 @@ export async function POST(request: NextRequest) {
       .eq('email', email)
       .single()
 
+    console.log('Supabase query result:', { admin, error })
+
     if (error || !admin) {
       await logger.warning('Login - User not found', {
         category: 'auth',
-        details: `Email: ${email}`,
+        details: `Email: ${email}, Error: ${JSON.stringify(error)}`,
         ipAddress
       })
+      console.error('Login failed - User not found:', error)
       return NextResponse.json(
         { error: 'Invalid email or password' },
         { status: 401 }
@@ -41,7 +44,9 @@ export async function POST(request: NextRequest) {
     }
 
     // 비밀번호 확인
+    console.log('Comparing password:', { password, hash: admin.password_hash })
     const isValidPassword = await bcrypt.compare(password, admin.password_hash)
+    console.log('Password comparison result:', isValidPassword)
 
     if (!isValidPassword) {
       await logger.warning('Login - Invalid password', {
@@ -49,6 +54,7 @@ export async function POST(request: NextRequest) {
         details: `Email: ${email}`,
         ipAddress
       })
+      console.error('Password mismatch')
       return NextResponse.json(
         { error: 'Invalid email or password' },
         { status: 401 }
