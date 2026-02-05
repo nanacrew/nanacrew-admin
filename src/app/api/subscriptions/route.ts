@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { supabase } from '@/lib/supabase'
+import { supabaseAdmin } from '@/lib/supabase'
 
 // GET /api/subscriptions - Get all subscriptions with filtering
 export async function GET(request: NextRequest) {
@@ -10,7 +10,7 @@ export async function GET(request: NextRequest) {
     const type = searchParams.get('type')
     const search = searchParams.get('search')
 
-    let query = supabase
+    let query = supabaseAdmin
       .from('subscriptions')
       .select(`
         *,
@@ -63,7 +63,7 @@ export async function POST(request: NextRequest) {
     }
 
     // 중복 확인
-    const { data: existing } = await supabase
+    const { data: existing } = await supabaseAdmin
       .from('subscriptions')
       .select('id')
       .eq('app_id', app_id)
@@ -87,7 +87,7 @@ export async function POST(request: NextRequest) {
       createdBy = sessionData.userId
     }
 
-    const { data, error } = await supabase
+    const { data, error } = await supabaseAdmin
       .from('subscriptions')
       .insert({
         app_id,

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { supabase } from '@/lib/supabase'
+import { supabaseAdmin } from '@/lib/supabase'
 
 type Params = {
   params: Promise<{
@@ -20,7 +20,7 @@ export async function PUT(request: NextRequest, { params }: Params) {
     if (end_date !== undefined) updateData.end_date = end_date
     if (notes !== undefined) updateData.notes = notes
 
-    const { data, error } = await supabase
+    const { data, error } = await supabaseAdmin
       .from('subscriptions')
       .update(updateData)
       .eq('id', id)
@@ -44,7 +44,7 @@ export async function DELETE(request: NextRequest, { params }: Params) {
   try {
     const { id } = await params
 
-    const { error } = await supabase
+    const { error } = await supabaseAdmin
       .from('subscriptions')
       .delete()
       .eq('id', id)
@@ -67,7 +67,7 @@ export async function POST(request: NextRequest, { params }: Params) {
     const { id } = await params
 
     // Delete all sessions for this subscription
-    const { error } = await supabase
+    const { error } = await supabaseAdmin
       .from('user_sessions')
       .delete()
       .eq('subscription_id', id)
