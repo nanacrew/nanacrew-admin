@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { supabase } from '@/lib/supabase'
+import { supabaseAdmin } from '@/lib/supabase'
 import bcrypt from 'bcryptjs'
 
 export async function POST(request: NextRequest) {
@@ -16,7 +16,7 @@ export async function POST(request: NextRequest) {
     }
 
     // 1. 중복 확인
-    const { data: existingUser } = await supabase
+    const { data: existingUser } = await supabaseAdmin
       .from('users')
       .select('id')
       .eq('app_id', app_id)
@@ -34,7 +34,7 @@ export async function POST(request: NextRequest) {
     const password_hash = await bcrypt.hash(password, 10)
 
     // 3. 사용자 생성
-    const { data: newUser, error: createError } = await supabase
+    const { data: newUser, error: createError } = await supabaseAdmin
       .from('users')
       .insert({
         app_id,
@@ -56,7 +56,7 @@ export async function POST(request: NextRequest) {
     }
 
     // 4. 기본 구독 생성 (free)
-    const { error: subError } = await supabase
+    const { error: subError } = await supabaseAdmin
       .from('subscriptions')
       .insert({
         app_id,
