@@ -927,10 +927,10 @@ export default function UsersPage() {
                 {selectedUser.subscriptions && selectedUser.subscriptions.length > 0 && (
                   <Button
                     onClick={() => {
-                      const sub = selectedUser.subscriptions[0]
-                      saveSubscription(sub.id)
+                      const sub = selectedUser.subscriptions?.[0]
+                      if (sub) saveSubscription(sub.id)
                     }}
-                    disabled={!selectedUser.subscriptions.some(sub => hasSubChanges(sub.id))}
+                    disabled={!selectedUser.subscriptions?.some(sub => hasSubChanges(sub.id))}
                   >
                     저장
                   </Button>
