@@ -66,3 +66,46 @@ export type AppService = {
   created_at: string
   updated_at: string
 }
+
+export type UserStatus = 'active' | 'inactive' | 'suspended'
+
+export type User = {
+  id: string
+  app_id: string
+  user_identifier: string
+  name?: string
+  email?: string
+  phone?: string
+  status: UserStatus
+  password_hash?: string
+  notes?: string
+  created_at: string
+  updated_at: string
+  created_by?: string
+}
+
+export type Subscription = {
+  id: string
+  app_id: string
+  user_id: string
+  user_identifier: string // 하위 호환성을 위해 유지
+  subscription_type: 'free' | 'basic' | 'premium' | 'enterprise'
+  status: 'active' | 'expired' | 'cancelled'
+  start_date?: string
+  end_date?: string
+  notes?: string
+  created_at: string
+  updated_at: string
+  created_by?: string
+}
+
+export type UserSession = {
+  id: string
+  subscription_id: string
+  user_id: string
+  session_token: string
+  device_info?: string
+  last_active: string
+  expires_at: string
+  created_at: string
+}
