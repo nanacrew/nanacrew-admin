@@ -79,12 +79,18 @@ export async function GET(request: NextRequest, { params }: Params) {
     }
 
     return NextResponse.json({
-      todayUsers,
-      yesterdayUsers,
-      totalUsers,
-      weekData: weekData?.map(d => ({ date: d.date, count: d.active_users || 0 })) || [],
-      monthData: monthData?.map(d => ({ date: d.date, count: d.active_users || 0 })) || [],
-      versionDistribution
+      today: todayUsers,
+      yesterday: yesterdayUsers,
+      total: totalUsers,
+      week: weekData?.map(d => ({
+        date: d.date,
+        active_users: d.active_users || 0,
+        version_distribution: d.version_distribution
+      })) || [],
+      month: monthData?.map(d => ({
+        date: d.date,
+        active_users: d.active_users || 0
+      })) || []
     })
   } catch (error) {
     console.error('Error fetching analytics:', error)
