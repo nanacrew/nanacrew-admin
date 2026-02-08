@@ -41,12 +41,9 @@ export default function AppDetailPage({ params }: { params: Promise<{ id: string
   const [loading, setLoading] = useState(true)
   const [showNewVersionForm, setShowNewVersionForm] = useState(false)
   const [formData, setFormData] = useState({
-    version: '',
-    minimum_version: '',
-    force_update: false,
-    update_message: '',
-    download_url: '',
-    features: ''
+    current_version: '',
+    update_version: '',
+    update_message: ''
   })
 
   useEffect(() => {
@@ -85,29 +82,31 @@ export default function AppDetailPage({ params }: { params: Promise<{ id: string
     e.preventDefault()
 
     try {
-      const features = formData.features
-        .split('\n')
-        .map(f => f.trim())
-        .filter(f => f.length > 0)
+      // 기본값 설정
+      const updateMessage = formData.update_message.trim() || '새로운 버전이 출시되었습니다. 업데이트를 진행해주세요.'
+      const downloadUrl = app?.package_name
+        ? `https://play.google.com/store/apps/details?id=${app.package_name}`
+        : ''
 
       const response = await fetch(`/api/apps/${id}/versions`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          ...formData,
-          features
+          version: formData.update_version,
+          minimum_version: formData.current_version,
+          force_update: true, // 항상 강제 업데이트
+          update_message: updateMessage,
+          download_url: downloadUrl,
+          features: []
         })
       })
 
       if (response.ok) {
         setShowNewVersionForm(false)
         setFormData({
-          version: '',
-          minimum_version: '',
-          force_update: false,
-          update_message: '',
-          download_url: '',
-          features: ''
+          current_version: '',
+          update_version: '',
+          update_message: ''
         })
         fetchVersions()
       }
@@ -200,66 +199,59 @@ export default function AppDetailPage({ params }: { params: Promise<{ id: string
               <form onSubmit={handleSubmit} className="mb-6 p-4 border rounded-lg space-y-4">
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <Label htmlFor="version">버전 *</Label>
+                    <Label htmlFor="current_version">현재 버전 *</Label>
                     <Input
-                      id="version"
+                      id="current_version"
                       required
                       placeholder="1.0.0"
-                      value={formData.version}
-                      onChange={(e) => setFormData({ ...formData, version: e.target.value })}
+                      value={formData.current_version}
+                      onChange={(e) => setFormData({ ...formData, current_version: e.target.value })}
                     />
+                    <p className="text-xs text-muted-foreground">
+                      이 버전 이하는 업데이트 필요
+                    </p>
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="minimum_version">최소 버전 *</Label>
+                    <Label htmlFor="update_version">업데이트 버전 *</Label>
                     <Input
-                      id="minimum_version"
+                      id="update_version"
                       required
-                      placeholder="1.0.0"
-                      value={formData.minimum_version}
-                      onChange={(e) => setFormData({ ...formData, minimum_version: e.target.value })}
+                      placeholder="1.0.1"
+                      value={formData.update_version}
+                      onChange={(e) => setFormData({ ...formData, update_version: e.target.value })}
                     />
+                    <p className="text-xs text-muted-foreground">
+                      새로 출시된 버전
+                    </p>
                   </div>
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="update_message">업데이트 메시지</Label>
+                  <Label htmlFor="update_message">업데이트 메시지 (선택)</Label>
                   <Input
                     id="update_message"
-                    placeholder="새로운 기능이 추가되었습니다"
+                    placeholder="비워두면 기본 메시지 사용"
                     value={formData.update_message}
                     onChange={(e) => setFormData({ ...formData, update_message: e.target.value })}
                   />
+                  <p className="text-xs text-muted-foreground">
+                    기본: "새로운 버전이 출시되었습니다. 업데이트를 진행해주세요."
+                  </p>
                 </div>
 
-                <div className="space-y-2">
-                  <Label htmlFor="download_url">다운로드 URL</Label>
-                  <Input
-                    id="download_url"
-                    placeholder="https://play.google.com/store/apps/details?id=..."
-                    value={formData.download_url}
-                    onChange={(e) => setFormData({ ...formData, download_url: e.target.value })}
-                  />
+                <div className="p-3 bg-blue-50 border border-blue-200 rounded-md">
+                  <p className="text-sm text-blue-800">
+                    ℹ️ 다운로드 URL은 자동으로 Play Store 링크가 생성됩니다
+                  </p>
+                  <p className="text-xs text-blue-600 mt-1 font-mono">
+                    {app?.package_name && `https://play.google.com/store/apps/details?id=${app.package_name}`}
+                  </p>
                 </div>
 
-                <div className="space-y-2">
-                  <Label htmlFor="features">주요 기능 (한 줄에 하나씩)</Label>
-                  <textarea
-                    id="features"
-                    className="w-full min-h-[100px] px-3 py-2 border rounded-md"
-                    placeholder="버그 수정&#10;성능 개선&#10;새로운 기능 추가"
-                    value={formData.features}
-                    onChange={(e) => setFormData({ ...formData, features: e.target.value })}
-                  />
-                </div>
-
-                <div className="flex items-center gap-2">
-                  <input
-                    type="checkbox"
-                    id="force_update"
-                    checked={formData.force_update}
-                    onChange={(e) => setFormData({ ...formData, force_update: e.target.checked })}
-                  />
-                  <Label htmlFor="force_update">강제 업데이트</Label>
+                <div className="p-3 bg-amber-50 border border-amber-200 rounded-md">
+                  <p className="text-sm text-amber-800">
+                    ⚠️ 항상 <strong>강제 업데이트</strong>로 등록됩니다
+                  </p>
                 </div>
 
                 <Button type="submit" className="w-full">등록하기</Button>
@@ -274,8 +266,8 @@ export default function AppDetailPage({ params }: { params: Promise<{ id: string
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead>버전</TableHead>
-                    <TableHead>최소 버전</TableHead>
+                    <TableHead>업데이트 버전</TableHead>
+                    <TableHead>현재 버전</TableHead>
                     <TableHead>강제 업데이트</TableHead>
                     <TableHead>출시일</TableHead>
                   </TableRow>
@@ -283,12 +275,14 @@ export default function AppDetailPage({ params }: { params: Promise<{ id: string
                 <TableBody>
                   {versions.map((version) => (
                     <TableRow key={version.id}>
-                      <TableCell className="font-mono font-semibold">{version.version}</TableCell>
-                      <TableCell className="font-mono text-sm">{version.minimum_version}</TableCell>
+                      <TableCell className="font-mono font-semibold text-blue-600">
+                        {version.version}
+                      </TableCell>
+                      <TableCell className="font-mono text-sm text-muted-foreground">
+                        {version.minimum_version} 이하
+                      </TableCell>
                       <TableCell>
-                        <Badge variant={version.force_update ? 'destructive' : 'secondary'}>
-                          {version.force_update ? '필수' : '선택'}
-                        </Badge>
+                        <Badge variant="destructive">필수</Badge>
                       </TableCell>
                       <TableCell>
                         {version.release_date
