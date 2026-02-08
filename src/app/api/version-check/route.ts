@@ -70,7 +70,7 @@ export async function GET(request: NextRequest) {
 
     // Compare versions
     const needsUpdate = compareVersions(currentVersion, latestVersion.version) < 0
-    const forceUpdate = compareVersions(currentVersion, latestVersion.minimum_version) < 0
+    const forceUpdate = compareVersions(currentVersion, latestVersion.minimum_version) <= 0
 
     // 로그 기록
     await logger.info('Version check successful', {
