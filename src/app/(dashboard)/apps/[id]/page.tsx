@@ -41,9 +41,9 @@ export default function AppDetailPage({ params }: { params: Promise<{ id: string
   const [loading, setLoading] = useState(true)
   const [showNewVersionForm, setShowNewVersionForm] = useState(false)
   const [formData, setFormData] = useState({
-    current_version: '',
     update_version: '',
-    update_message: ''
+    update_message: '',
+    download_url: ''
   })
 
   useEffect(() => {
@@ -82,18 +82,23 @@ export default function AppDetailPage({ params }: { params: Promise<{ id: string
     e.preventDefault()
 
     try {
+      // 현재 버전 (최신 버전)
+      const currentVersion = versions.length > 0 ? versions[0].version : '0.0.0'
+
       // 기본값 설정
       const updateMessage = formData.update_message.trim() || '새로운 버전이 출시되었습니다. 업데이트를 진행해주세요.'
-      const downloadUrl = app?.package_name
-        ? `https://play.google.com/store/apps/details?id=${app.package_name}`
-        : ''
+      const downloadUrl = formData.download_url.trim() || (
+        app?.package_name
+          ? `https://play.google.com/store/apps/details?id=${app.package_name}`
+          : ''
+      )
 
       const response = await fetch(`/api/apps/${id}/versions`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           version: formData.update_version,
-          minimum_version: formData.current_version,
+          minimum_version: currentVersion,
           force_update: true, // 항상 강제 업데이트
           update_message: updateMessage,
           download_url: downloadUrl,
@@ -104,9 +109,9 @@ export default function AppDetailPage({ params }: { params: Promise<{ id: string
       if (response.ok) {
         setShowNewVersionForm(false)
         setFormData({
-          current_version: '',
           update_version: '',
-          update_message: ''
+          update_message: '',
+          download_url: ''
         })
         fetchVersions()
       }
@@ -199,16 +204,14 @@ export default function AppDetailPage({ params }: { params: Promise<{ id: string
               <form onSubmit={handleSubmit} className="mb-6 p-4 border rounded-lg space-y-4">
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <Label htmlFor="current_version">현재 버전 *</Label>
+                    <Label>현재 버전</Label>
                     <Input
-                      id="current_version"
-                      required
-                      placeholder="1.0.0"
-                      value={formData.current_version}
-                      onChange={(e) => setFormData({ ...formData, current_version: e.target.value })}
+                      disabled
+                      value={versions.length > 0 ? versions[0].version : '등록된 버전 없음'}
+                      className="bg-gray-100"
                     />
                     <p className="text-xs text-muted-foreground">
-                      이 버전 이하는 업데이트 필요
+                      이 버전 이하는 업데이트 필요 (자동 설정)
                     </p>
                   </div>
                   <div className="space-y-2">
@@ -239,12 +242,16 @@ export default function AppDetailPage({ params }: { params: Promise<{ id: string
                   </p>
                 </div>
 
-                <div className="p-3 bg-blue-50 border border-blue-200 rounded-md">
-                  <p className="text-sm text-blue-800">
-                    ℹ️ 다운로드 URL은 자동으로 Play Store 링크가 생성됩니다
-                  </p>
-                  <p className="text-xs text-blue-600 mt-1 font-mono">
-                    {app?.package_name && `https://play.google.com/store/apps/details?id=${app.package_name}`}
+                <div className="space-y-2">
+                  <Label htmlFor="download_url">다운로드 URL (선택)</Label>
+                  <Input
+                    id="download_url"
+                    placeholder="https://..."
+                    value={formData.download_url}
+                    onChange={(e) => setFormData({ ...formData, download_url: e.target.value })}
+                  />
+                  <p className="text-xs text-muted-foreground">
+                    비워두면 Play Store 링크 자동 생성: {app?.package_name && `https://play.google.com/store/apps/details?id=${app.package_name}`}
                   </p>
                 </div>
 
