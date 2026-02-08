@@ -290,7 +290,11 @@ export default function AppDetailPage({ params }: { params: Promise<{ id: string
                           {version.force_update ? '필수' : '선택'}
                         </Badge>
                       </TableCell>
-                      <TableCell>{new Date(version.release_date).toLocaleDateString('ko-KR')}</TableCell>
+                      <TableCell>
+                        {version.release_date
+                          ? new Date(version.release_date).toLocaleDateString('ko-KR')
+                          : '-'}
+                      </TableCell>
                     </TableRow>
                   ))}
                 </TableBody>

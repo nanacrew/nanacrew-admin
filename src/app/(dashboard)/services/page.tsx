@@ -270,7 +270,10 @@ export default function ServicesPage() {
 
                   <div className="pt-2 border-t">
                     <p className="text-xs text-muted-foreground">
-                      등록일: {new Date(service.created_at).toLocaleDateString('ko-KR')}
+                      등록일:{' '}
+                      {service.created_at
+                        ? new Date(service.created_at).toLocaleDateString('ko-KR')
+                        : '-'}
                     </p>
                   </div>
                 </div>

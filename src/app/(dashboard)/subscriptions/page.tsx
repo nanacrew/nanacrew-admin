@@ -422,7 +422,12 @@ export default function SubscriptionsPage() {
                         )}
                       </div>
                       <div className="text-sm text-muted-foreground space-y-1">
-                        <div>시작일: {new Date(sub.start_date).toLocaleDateString('ko-KR')}</div>
+                        <div>
+                          시작일:{' '}
+                          {sub.start_date
+                            ? new Date(sub.start_date).toLocaleDateString('ko-KR')
+                            : '-'}
+                        </div>
                         {sub.end_date && (
                           <div>만료일: {new Date(sub.end_date).toLocaleDateString('ko-KR')}</div>
                         )}

@@ -776,7 +776,10 @@ export default function UsersPage() {
                           <div className="flex flex-col gap-1">
                             {user.subscriptions.map((sub) => (
                               <div key={sub.id} className="text-xs">
-                                {new Date(sub.start_date).toLocaleDateString('ko-KR')} ~{' '}
+                                {sub.start_date
+                                  ? new Date(sub.start_date).toLocaleDateString('ko-KR')
+                                  : '-'}{' '}
+                                ~{' '}
                                 {sub.end_date ? new Date(sub.end_date).toLocaleDateString('ko-KR') : '무제한'}
                               </div>
                             ))}
@@ -786,7 +789,9 @@ export default function UsersPage() {
                         )}
                       </TableCell>
                       <TableCell className="text-sm">
-                        {new Date(user.created_at).toLocaleDateString('ko-KR')}
+                        {user.created_at
+                          ? new Date(user.created_at).toLocaleDateString('ko-KR')
+                          : '-'}
                       </TableCell>
                     </TableRow>
                   ))}
@@ -890,7 +895,11 @@ export default function UsersPage() {
                             <Label className="text-sm mb-1 block">시작일</Label>
                             <Input
                               type="text"
-                              value={new Date(sub.start_date).toLocaleDateString('ko-KR')}
+                              value={
+                                sub.start_date
+                                  ? new Date(sub.start_date).toLocaleDateString('ko-KR')
+                                  : '-'
+                              }
                               disabled
                               className="h-9 bg-gray-100"
                             />

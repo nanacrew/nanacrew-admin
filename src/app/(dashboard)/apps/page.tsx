@@ -149,7 +149,11 @@ export default function Home() {
                         {app.todayUsers?.toLocaleString() || '0'}
                       </span>
                     </TableCell>
-                    <TableCell>{new Date(app.created_at).toLocaleDateString('ko-KR')}</TableCell>
+                    <TableCell>
+                      {app.created_at
+                        ? new Date(app.created_at).toLocaleDateString('ko-KR')
+                        : '-'}
+                    </TableCell>
                     <TableCell className="text-right">
                       <div className="flex gap-2 justify-end">
                         <Link href={`/apps/${app.id}`}>

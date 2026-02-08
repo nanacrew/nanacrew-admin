@@ -281,7 +281,12 @@ export default function AnalyticsPage() {
                                   style={{ height: `${height}%` }}
                                 >
                                   <div className="absolute bottom-full mb-2 left-1/2 transform -translate-x-1/2 bg-gray-800 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 whitespace-nowrap">
-                                    {new Date(day.date).toLocaleDateString('ko-KR', { month: 'short', day: 'numeric' })}
+                                    {day.date
+                                      ? new Date(day.date).toLocaleDateString('ko-KR', {
+                                          month: 'short',
+                                          day: 'numeric'
+                                        })
+                                      : '-'}
                                     <br />
                                     {day.count}명
                                   </div>

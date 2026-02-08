@@ -331,7 +331,9 @@ export default function AppServicesSection({ appId }: { appId: string }) {
                 </div>
 
                 <div className="mt-2 text-xs text-muted-foreground">
-                  등록일: {new Date(service.created_at).toLocaleDateString('ko-KR')}
+                  등록일: {service.created_at
+                    ? new Date(service.created_at).toLocaleDateString('ko-KR')
+                    : '-'}
                 </div>
               </div>
             ))}
