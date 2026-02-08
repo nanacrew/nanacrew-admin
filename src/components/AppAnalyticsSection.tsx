@@ -53,10 +53,10 @@ export default function AppAnalyticsSection({ appId }: { appId: string }) {
     )
   }
 
-  const todayChange = analytics.yesterday > 0
-    ? ((analytics.today - analytics.yesterday) / analytics.yesterday * 100).toFixed(1)
+  const todayChange = (analytics.yesterday ?? 0) > 0
+    ? (((analytics.today ?? 0) - (analytics.yesterday ?? 0)) / (analytics.yesterday ?? 0) * 100).toFixed(1)
     : '0'
-  const todayTrend = analytics.today >= analytics.yesterday ? '↑' : '↓'
+  const todayTrend = (analytics.today ?? 0) >= (analytics.yesterday ?? 0) ? '↑' : '↓'
 
   return (
     <Card>
@@ -70,9 +70,9 @@ export default function AppAnalyticsSection({ appId }: { appId: string }) {
           <div className="p-6 border rounded-lg bg-gradient-to-br from-blue-50 to-blue-100">
             <div className="text-sm text-blue-600 font-medium mb-2">오늘 접속자</div>
             <div className="text-3xl font-bold text-blue-900 mb-1">
-              {analytics.today.toLocaleString()}
+              {(analytics.today ?? 0).toLocaleString()}
             </div>
-            <div className={`text-sm ${analytics.today >= analytics.yesterday ? 'text-green-600' : 'text-red-600'}`}>
+            <div className={`text-sm ${(analytics.today ?? 0) >= (analytics.yesterday ?? 0) ? 'text-green-600' : 'text-red-600'}`}>
               {todayTrend} {Math.abs(Number(todayChange))}% vs 어제
             </div>
           </div>
@@ -81,7 +81,7 @@ export default function AppAnalyticsSection({ appId }: { appId: string }) {
           <div className="p-6 border rounded-lg bg-gradient-to-br from-purple-50 to-purple-100">
             <div className="text-sm text-purple-600 font-medium mb-2">어제 접속자</div>
             <div className="text-3xl font-bold text-purple-900">
-              {analytics.yesterday.toLocaleString()}
+              {(analytics.yesterday ?? 0).toLocaleString()}
             </div>
           </div>
 
@@ -89,7 +89,7 @@ export default function AppAnalyticsSection({ appId }: { appId: string }) {
           <div className="p-6 border rounded-lg bg-gradient-to-br from-green-50 to-green-100">
             <div className="text-sm text-green-600 font-medium mb-2">누적 접속</div>
             <div className="text-3xl font-bold text-green-900">
-              {analytics.total.toLocaleString()}
+              {(analytics.total ?? 0).toLocaleString()}
             </div>
             <div className="text-sm text-green-600">전체 기간</div>
           </div>
@@ -101,17 +101,17 @@ export default function AppAnalyticsSection({ appId }: { appId: string }) {
             <h3 className="text-lg font-semibold mb-4">최근 7일 접속자 추이</h3>
             <div className="h-64 flex items-end justify-between gap-2">
               {analytics.week.map((day, index) => {
-                const maxUsers = Math.max(...analytics.week.map(d => d.active_users), 1)
-                const height = (day.active_users / maxUsers) * 100
+                const maxUsers = Math.max(...analytics.week.map(d => d.active_users ?? 0), 1)
+                const height = ((day.active_users ?? 0) / maxUsers) * 100
 
                 return (
                   <div key={index} className="flex-1 flex flex-col items-center">
                     <div
                       className="w-full bg-blue-500 rounded-t hover:bg-blue-600 transition-colors cursor-pointer relative group"
-                      style={{ height: `${height}%`, minHeight: day.active_users > 0 ? '8px' : '2px' }}
+                      style={{ height: `${height}%`, minHeight: (day.active_users ?? 0) > 0 ? '8px' : '2px' }}
                     >
                       <div className="absolute bottom-full mb-2 left-1/2 transform -translate-x-1/2 bg-gray-900 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
-                        {day.active_users.toLocaleString()}명
+                        {(day.active_users ?? 0).toLocaleString()}명
                       </div>
                     </div>
                     <div className="text-xs text-gray-500 mt-2">
