@@ -276,7 +276,7 @@ export default function AppDetailPage({ params }: { params: Promise<{ id: string
                     <TableHead>업데이트 버전</TableHead>
                     <TableHead>현재 버전</TableHead>
                     <TableHead>강제 업데이트</TableHead>
-                    <TableHead>출시일</TableHead>
+                    <TableHead>출시 일시</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -291,9 +291,16 @@ export default function AppDetailPage({ params }: { params: Promise<{ id: string
                       <TableCell>
                         <Badge variant="destructive">필수</Badge>
                       </TableCell>
-                      <TableCell>
+                      <TableCell className="text-sm">
                         {version.release_date
-                          ? new Date(version.release_date).toLocaleDateString('ko-KR')
+                          ? new Date(version.release_date).toLocaleString('ko-KR', {
+                              year: 'numeric',
+                              month: '2-digit',
+                              day: '2-digit',
+                              hour: '2-digit',
+                              minute: '2-digit',
+                              hour12: false
+                            })
                           : '-'}
                       </TableCell>
                     </TableRow>
